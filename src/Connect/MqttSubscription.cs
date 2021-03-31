@@ -1,10 +1,13 @@
 ﻿using System;
+using MQTTnet.Protocol;
+
 namespace PipServices3.Mqtt.Connect
 {
     public class MqttSubscription
     {
-        public MqttSubscription()
-        {
-        }
+        public string Topic { get; set; }
+        public MqttQualityOfServiceLevel Qos { get; set; }
+        public bool Filter { get; set; }
+        public IMqttMessageListener Listener { get; set; }
     }
 }
