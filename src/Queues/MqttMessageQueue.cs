@@ -256,8 +256,7 @@ namespace PipServices3.Mqtt.Queues
             if (_serializeEnvelope)
             {
                 message.SentTime = DateTime.UtcNow;
-                var json = JsonConverter.ToJson(message);
-                data = Encoding.UTF8.GetBytes(json);
+                data = JsonConverter.ToJson(message);
             }
 
             var qos = (MqttQualityOfServiceLevel)_qos;
