@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.Options;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Protocol;
+
 using PipServices3.Commons.Config;
 using PipServices3.Commons.Errors;
 using PipServices3.Commons.Refer;
@@ -56,7 +56,7 @@ namespace PipServices3.Mqtt.Connect
         protected ConfigParams _options = new ConfigParams();
 
         // MQTT connection object
-        private IMqttClientOptions _clientOptions;
+        private MqttClientOptions _clientOptions;
         protected IMqttClient _connection;
 
         // Topic subscriptions
@@ -160,8 +160,8 @@ namespace PipServices3.Mqtt.Connect
             //opts.SetConnectRetryInterval(time.Millisecond * time.Duration(c.reconnectTimeout))
 
             var client = new MqttFactory().CreateMqttClient();
-            client.UseDisconnectedHandler(DisconnectedHandlerAsync);
-            client.UseApplicationMessageReceivedHandler(MessageReceiveHandlerAsync);
+            client.DisconnectedAsync += async e => await DisconnectedHandlerAsync(e);
+            client.ApplicationMessageReceivedAsync += async e => await MessageReceiveHandlerAsync(e);
 
             try
             {
@@ -193,6 +193,7 @@ namespace PipServices3.Mqtt.Connect
             try
             {
                 await _connection.DisconnectAsync();
+                _connection.Dispose();
             }
             finally
             {
